@@ -131,62 +131,33 @@
 
 import React from 'react';
 import { View, Image, StyleSheet, Text } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  useAnimatedGestureHandler,
-  withRepeat,
-} from 'react-native-reanimated';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import Svg, { Circle, Image as SvgImage } from 'react-native-svg';
 
 const App = () => {
-  const bellX = useSharedValue(0);
-  const circleRotation = useSharedValue(0);
-
-  const bellStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: bellX.value }, { translateY: bellX.value }],
-    };
-  });
-
-  const circleStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${circleRotation.value}deg` }],
-    };
-  });
-
-  const panGestureHandler = useAnimatedGestureHandler({
-    onStart: (_, ctx) => {
-      ctx.x = bellX.value;
-    },
-    onActive: (event, ctx) => {
-      bellX.value = ctx.x + event.translationX;
-    },
-  });
-
   return (
     <View style={styles.container}>
-      
-      <PanGestureHandler onGestureEvent={panGestureHandler}>
-        <Animated.View style={[styles.bell, bellStyle]}>
-          <Image
-            source={require('./assets/bell.png')}
-            style={{ width: 100, height: 100 }}
-          />
-        </Animated.View>
-      </PanGestureHandler>
+      {/* Quả chuông */}
+      <Svg height="100" width="100" style={styles.bell}>
+        <SvgImage
+          href={require('./assets/bell.png')}
+          height="100"
+          width="100"
+        />
+      </Svg>
 
+      {/* Hình tròn */}
       <View style={styles.circleContainer}>
-        <Animated.View style={[styles.circle, circleStyle]}>
+        <View style={styles.circle}>
+          {/* Nội dung hình tròn */}
+          {/* Bạn có thể thay đổi hình ảnh hoặc nội dung theo ý muốn */}
           <Image
             source={require('./assets/bat_quai.png')}
             style={{ width: 50, height: 50 }}
           />
-        </Animated.View>
+        </View>
       </View>
 
-      
+      {/* Dòng văn bản */}
       <Text style={styles.text}>
         Xin chào, đây là một dòng văn bản hợp với nội dung!
       </Text>
@@ -228,3 +199,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
