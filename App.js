@@ -129,38 +129,115 @@
 // cau 3
 
 
-import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
-import Svg, { Circle, Image as SvgImage } from 'react-native-svg';
+import React, { useEffect, useRef } from 'react';
+import { View, Image, StyleSheet, Animated, Easing } from 'react-native';
 
 const App = () => {
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+  const rotationAnimation = useRef(new Animated.Value(0)).current;
+  const colorAnimation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(shakeAnimation, {
+          toValue: 10,
+          duration: 100,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnimation, {
+          toValue: -10,
+          duration: 100,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnimation, {
+          toValue: 0,
+          duration: 100,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        
+      ]),
+      {
+        iterations: -1, // lặp vô hạn
+      }
+    ).start();
+  }, []);
+  //của hình tròn
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+       
+        Animated.timing(rotationAnimation, {
+          toValue: 1,
+          duration: 2000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ]),
+      {
+        iterations: -1, 
+      }
+    ).start();
+  }, []);
+
+
+  // text
+  useEffect(() => {
+    startColorAnimation();
+  }, []);
+  const startColorAnimation = () => {
+    Animated.loop(
+      Animated.timing(colorAnimation, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: false,
+      })
+    ).start();
+  };
+
+  const textColorInterpolation = colorAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['green', 'red'],
+  });
+
+  const interpolatedRotateAnimation = shakeAnimation.interpolate({
+    inputRange: [-10, 0, 10],
+     outputRange: ['-5deg', '0deg', '5deg'],
+    
+  });
+  const interpolatedRotateAnimation1 = rotationAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   return (
     <View style={styles.container}>
-      {/* Quả chuông */}
-      <Svg height="100" width="100" style={styles.bell}>
-        <SvgImage
-          href={require('./assets/bell.png')}
-          height="100"
-          width="100"
-        />
-      </Svg>
-
-      {/* Hình tròn */}
-      <View style={styles.circleContainer}>
-        <View style={styles.circle}>
-          {/* Nội dung hình tròn */}
-          {/* Bạn có thể thay đổi hình ảnh hoặc nội dung theo ý muốn */}
-          <Image
-            source={require('./assets/bat_quai.png')}
-            style={{ width: 50, height: 50 }}
-          />
-        </View>
+      <View style={{backgroundColor: "red", width: 250, height:250, borderRadius: 360, alignItems: 'center', justifyContent:'center'}}>
+      <View style= {styles.ImgDongHo}>
+      <Animated.Image
+        source={require('./assets/bat_quai.png')} 
+        style={[styles.bellImageDongHo, { transform: [{ rotate: interpolatedRotateAnimation1}] }]}
+      />
       </View>
+        
+      </View>
+      
+       <View style= {styles.ImgChuong}>
+       <Animated.Image
+        source={require('./assets/bell.png')} 
+        style={[styles.bellImage, { transform: [{ rotate: interpolatedRotateAnimation }] }]}
+      />
+       </View>
 
-      {/* Dòng văn bản */}
-      <Text style={styles.text}>
-        Xin chào, đây là một dòng văn bản hợp với nội dung!
-      </Text>
+       <View>
+       <Animated.Text style={[styles.text, { color: textColorInterpolation }]}>
+        Xin Chào !!!
+      </Animated.Text>
+       </View>
+      
     </View>
   );
 };
@@ -169,34 +246,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
+},
+  bellImage: {
+    width: 200, 
+    height: 200, 
+  },
+  ImgChuong:{
+    paddingRight: 20, 
+    paddingBottom: 20, 
+    
     alignItems: 'flex-end',
-    padding: 20,
   },
-  bell: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-  },
-  circleContainer: {
-    position: 'absolute',
-    top: 50,
-    left: 50,
-  },
-  circle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'lightblue',
-    justifyContent: 'center',
-    alignItems: 'center',
+  bellImageDongHo:{
+    width: 200, 
+    height: 200, 
   },
   text: {
-    marginTop: 20,
-    fontSize: 16,
-    textAlign: 'center',
-    color: 'black',
-  },
+    width: 200, 
+    height: 200, 
+    fontSize: 50,
+  }
 });
 
 export default App;
-
