@@ -1,20 +1,49 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Animated } from 'react-native';
 
-export default function App() {
+const App = () => {
+  const [opacityValue] = useState(new Animated.Value(0));
+
+  useEffect(() => {
+    animateText();
+  }, []);
+
+  const animateText = () => {
+    Animated.sequence([
+      Animated.timing(opacityValue, {
+        toValue: 0.5,
+        duration: 3000,
+        useNativeDriver: false,
+      }),
+      Animated.timing(opacityValue, {
+        toValue: 1,
+        duration: 3000,
+        useNativeDriver: false,
+      }),
+    ]).start();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Animated.Text
+        style={{
+          fontSize: 20,
+          opacity: opacityValue,
+        }}
+      >
+        Hello 1
+      </Animated.Text>
+      <View style={{ height: 20 }} />
+      <Animated.Text
+        style={{
+          fontSize: 20,
+          opacity: opacityValue,
+        }}
+      >
+       Hello 2
+      </Animated.Text>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
